@@ -7,7 +7,7 @@ export default function Home() {
         </h1>
 
         <p className="mt-6 text-xl text-gray-400 leading-relaxed">
-          I design systems.
+          I am student programer.
           <br />
           I build automation.
           <br />
@@ -34,7 +34,7 @@ export default function Home() {
             href="/now"
             className="hover:text-white transition"
           >
-            Now
+            Contact
           </a>
         </div>
       </div>
