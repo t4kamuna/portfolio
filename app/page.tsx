@@ -31,7 +31,7 @@ export default function Home() {
           </a>
 
           <a
-            href="/now"
+            href="/contact"
             className="hover:text-white transition"
           >
             Contact
