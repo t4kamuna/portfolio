@@ -1,5 +1,5 @@
 @import "tailwindcss";
-
+/*  サイト全体の色変数*/
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -12,10 +12,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+/* OSがダークモードの場合に色を切り替える*/
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #000000;
   }
 }
 
@@ -29,7 +30,7 @@ body {
   overscroll-behavior: none;
 }
 
-
+/* サイト全体の基本スタイル*/
 body {
   background: var(--background);
   color: var(--foreground);
