@@ -1,26 +1,32 @@
 "use client";
-
+//ReactのライフサイクルとCanvas参照に使用
 import { useEffect, useRef } from "react";
+//nextjsのページ遷移用リンク
 import Link from "next/link";
+//snsアイコン
 import { Github, Twitter, BookOpen } from "lucide-react";
 
 export default function Home() {
+  //canvas要素を参照するためのRef
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
+    //canvas
     const canvas = canvasRef.current;
     if (!canvas) return;
-
+    // 2D描画コンテキスト
     const context = canvas.getContext("2d");
     if (!context) return;
-
+    //アニメーション管理
     let animationId: number;
+    //マウス位置
     const mouse = { x: 0, y: 0 };
+    //ドット情報
     let dots: { x: number; y: number; baseX: number; baseY: number }[] = [];
-
+    //描画する文字とサイズ
     const text = "t4kamuna";
     const fontSize = 140;
-
+    //画面サイズ取得→文字描画→文字をどっと変換
     const setupCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -31,7 +37,7 @@ export default function Home() {
       context.fillStyle = "white";
       context.textAlign = "center";
       context.textBaseline = "middle";
-
+      //ドットサイズ
       context.fillText(text, canvas.width / 2, canvas.height / 2);
 
       const imageData = context.getImageData(
@@ -75,8 +81,8 @@ export default function Home() {
           dot.x += (dot.baseX - dot.x) * 0.05;
           dot.y += (dot.baseY - dot.y) * 0.05;
         }
-
-        context.fillStyle = "white";
+       //ドット文字の色
+        context.fillStyle = "#ff0040";
         context.fillRect(dot.x, dot.y, 2, 2);
       });
 
@@ -97,7 +103,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="relative min-h-screen bg-black text-white overflow-hidden">
+    <main className="relative min-h-screen bg-[#000000] text-[#252020] overflow-hidden">
       {/* Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0" />
 
