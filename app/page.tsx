@@ -101,7 +101,7 @@ export default function Home() {
           dot.y += (dot.baseY - dot.y) * 0.05;
         }
        //ドット文字の色
-        context.fillStyle = "#ffffff";
+        context.fillStyle = "#ff0040";
         context.fillRect(dot.x, dot.y, 2, 2);
       });
 
