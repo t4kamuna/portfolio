@@ -1,14 +1,20 @@
 "use client";
 //ReactのライフサイクルとCanvas参照に使用
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 //nextjsのページ遷移用リンク
 import Link from "next/link";
 //snsアイコン
 import { Github, Twitter, BookOpen } from "lucide-react";
 
+
 export default function Home() {
   //canvas要素を参照するためのRef
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  //カーソル
+  const [cursor, setCursor] = useState({x:0, y:0});
+  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
+
+
 
   useEffect(() => {
     //canvas
@@ -62,9 +68,22 @@ export default function Home() {
     };
 
     const handleMouseMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-    };
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+
+  setCursor({ x: e.clientX, y: e.clientY });
+
+  const id = Date.now();
+
+  setTrail((prev) => [
+    ...prev.slice(-20),
+    { x: e.clientX, y: e.clientY, id },
+  ]);
+
+  setTimeout(() => {
+    setTrail((prev) => prev.filter((point) => point.id !== id));
+  }, 500);
+};
 
     const animate = () => {
       context.clearRect(0, 0, canvas.width, canvas.height);
@@ -82,7 +101,7 @@ export default function Home() {
           dot.y += (dot.baseY - dot.y) * 0.05;
         }
        //ドット文字の色
-        context.fillStyle = "#ff0040";
+        context.fillStyle = "#ffffff";
         context.fillRect(dot.x, dot.y, 2, 2);
       });
 
