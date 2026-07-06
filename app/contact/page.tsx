@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Github, Twitter, BookOpen, Mail } from "lucide-react";
+import { Github, Twitter, BookOpen } from "lucide-react";
 import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
@@ -7,14 +7,7 @@ export const metadata: Metadata = {
   description: "t4kamuna への連絡先。",
 };
 
-// TODO: メールアドレスを公開してよいものに差し替えてください
 const contacts = [
-  {
-    href: "mailto:your-email@example.com",
-    label: "Email",
-    detail: "【TODO: 公開用メールアドレスに差し替え】",
-    Icon: Mail,
-  },
   {
     href: "https://github.com/t4kamuna",
     label: "GitHub",
@@ -52,7 +45,7 @@ export default function ContactPage() {
           お仕事のご相談・技術の話など、以下のいずれかからお気軽にご連絡ください。
         </p>
       </Reveal>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
+      <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {contacts.map(({ href, label, detail, Icon }, i) => (
           <Reveal key={label} delay={(i % 2) * 120} className="flex">
             <a

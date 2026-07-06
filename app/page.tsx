@@ -2,11 +2,12 @@ import Link from "next/link";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import ParticleField from "@/components/ParticleField";
 import ProjectCard from "@/components/ProjectCard";
+import ComingSoon from "@/components/ComingSoon";
 import Reveal from "@/components/Reveal";
 import Marquee from "@/components/Marquee";
 import { projects } from "@/lib/projects";
 
-const ROLE = "SOFTWARE ENGINEER";
+const ROLE = "STUDENT PROGRAMMER";
 
 export default function Home() {
   const featured = projects.filter((p) => p.featured);
@@ -41,8 +42,7 @@ export default function Home() {
             className="fade-up-in max-w-xl text-sm leading-relaxed text-muted"
             style={{ animationDelay: "1800ms" }}
           >
-            【TODO: 実データに差し替え】肩書きと一言(例:
-            Webフロントエンドを中心に、動くもの・触れるものを作っています)
+            Web を学びはじめた大学1年生。セキュリティとインフラに興味があります。
           </p>
         </div>
         <ChevronDown
@@ -55,11 +55,12 @@ export default function Home() {
       {/* 流れるテキスト帯 */}
       <Marquee
         items={[
-          "Software Engineer",
+          "Student Programmer",
           "Web",
           "TypeScript",
-          "Creative Coding",
-          "Interactive",
+          "Python",
+          "Security",
+          "Infrastructure",
         ]}
       />
 
@@ -76,7 +77,9 @@ export default function Home() {
         </Reveal>
         <Reveal delay={120}>
           <p className="mt-6 max-w-2xl leading-relaxed text-muted">
-            【TODO: 実データに差し替え】自己紹介を3〜4行で。何をしてきた人で、いま何に興味があり、どんな仕事がしたいか。
+            大学1年生の student programmer。Web
+            フロントエンドを入り口にプログラミングを学習中で、セキュリティ・インフラ分野に興味があります。学んだことは
+            Zenn で発信しています。
           </p>
         </Reveal>
         <Reveal delay={200}>
@@ -104,25 +107,35 @@ export default function Home() {
             Featured <span className="gradient-text">projects</span>
           </h2>
         </Reveal>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2">
-          {featured.map((project, i) => (
-            <Reveal key={project.slug} delay={i * 120} className="flex">
-              <ProjectCard project={project} />
+        {featured.length > 0 ? (
+          <>
+            <div className="mt-10 grid gap-6 sm:grid-cols-2">
+              {featured.map((project, i) => (
+                <Reveal key={project.slug} delay={i * 120} className="flex">
+                  <ProjectCard project={project} />
+                </Reveal>
+              ))}
+            </div>
+            <Reveal delay={200}>
+              <Link
+                href="/projects"
+                className="group mt-10 inline-flex items-center gap-1.5 text-sm text-accent"
+              >
+                すべてのプロジェクトを見る
+                <ArrowRight
+                  size={15}
+                  className="transition-transform duration-300 group-hover:translate-x-1.5"
+                />
+              </Link>
             </Reveal>
-          ))}
-        </div>
-        <Reveal delay={200}>
-          <Link
-            href="/projects"
-            className="group mt-10 inline-flex items-center gap-1.5 text-sm text-accent"
-          >
-            すべてのプロジェクトを見る
-            <ArrowRight
-              size={15}
-              className="transition-transform duration-300 group-hover:translate-x-1.5"
-            />
-          </Link>
-        </Reveal>
+          </>
+        ) : (
+          <Reveal delay={120}>
+            <div className="mt-10">
+              <ComingSoon />
+            </div>
+          </Reveal>
+        )}
       </section>
 
       {/* Contact CTA */}

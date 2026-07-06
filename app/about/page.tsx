@@ -1,28 +1,62 @@
 import type { Metadata } from "next";
+import type { IconType } from "react-icons";
+import {
+  SiTypescript,
+  SiReact,
+  SiNextdotjs,
+  SiTailwindcss,
+  SiPython,
+  SiGit,
+  SiGithub,
+  SiVercel,
+} from "react-icons/si";
 import Reveal from "@/components/Reveal";
 
 export const metadata: Metadata = {
   title: "About",
-  description: "t4kamuna の経歴・スキル。",
+  description: "t4kamuna について。大学1年生の student programmer。",
 };
 
-// TODO: ここは後で実データを入れてください(スキル・経歴ともサンプルです)
-const skills = [
-  { category: "Frontend", items: ["TypeScript", "React", "Next.js", "Tailwind CSS"] },
-  { category: "Backend", items: ["【TODO: 例 Node.js / Go など】"] },
-  { category: "Tools", items: ["【TODO: 例 Docker / AWS など】"] },
+type Skill = { name: string; Icon: IconType; color: string };
+
+const skillGroups: { category: string; note: string; items: Skill[] }[] = [
+  {
+    category: "Frontend",
+    note: "学習中",
+    items: [
+      { name: "TypeScript", Icon: SiTypescript, color: "#3178C6" },
+      { name: "React", Icon: SiReact, color: "#61DAFB" },
+      { name: "Next.js", Icon: SiNextdotjs, color: "#e2e8f0" },
+      { name: "Tailwind CSS", Icon: SiTailwindcss, color: "#06B6D4" },
+    ],
+  },
+  {
+    category: "Language",
+    note: "少し書ける",
+    items: [{ name: "Python", Icon: SiPython, color: "#3776AB" }],
+  },
+  {
+    category: "Tools",
+    note: "日常的に使用",
+    items: [
+      { name: "Git", Icon: SiGit, color: "#F05032" },
+      { name: "GitHub", Icon: SiGithub, color: "#e2e8f0" },
+      { name: "Vercel", Icon: SiVercel, color: "#e2e8f0" },
+    ],
+  },
 ];
 
 const timeline = [
   {
-    period: "20XX - 現在",
-    title: "【TODO: 所属・役職】",
-    description: "【TODO: 何をしているかを1〜2行で】",
+    period: "2026 - 現在",
+    title: "大学在学中(1年)",
+    description:
+      "プログラミングを学習中。Web を入り口に、セキュリティ・インフラ分野へ関心を広げている。",
   },
   {
-    period: "20XX - 20XX",
-    title: "【TODO: 学歴や前職など】",
-    description: "【TODO: 概要を1〜2行で】",
+    period: "2026.3",
+    title: "高校卒業",
+    description: "在学中にプログラミングに出会い、独学を始める。",
   },
 ];
 
@@ -42,10 +76,20 @@ export default function AboutPage() {
       <Reveal delay={120}>
         <section className="mt-8 max-w-2xl space-y-4 leading-relaxed text-muted">
           <p>
-            【TODO: 実データに差し替え】自己紹介の本文。どんな経緯でエンジニアになり、何が得意で、どんな価値を出せるか。
+            大学1年生の student programmer です。Web
+            フロントエンドを入り口にプログラミングを学びながら、このサイトのように「動くもの・触れるもの」を自分の手で形にする練習をしています。
           </p>
           <p>
-            【TODO: 実データに差し替え】趣味・関心・活動(登壇、記事執筆、OSSなど)があればここに。
+            興味があるのはセキュリティとインフラの分野。学んだことは
+            <a
+              href="https://zenn.dev/t4kamuna"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mx-1 text-accent underline-offset-4 hover:underline"
+            >
+              Zenn
+            </a>
+            にたまに記事として書いています。
           </p>
         </section>
       </Reveal>
@@ -55,15 +99,31 @@ export default function AboutPage() {
           <h2 className="text-xl font-bold">Skills</h2>
         </Reveal>
         <div className="mt-6 grid gap-6 sm:grid-cols-3">
-          {skills.map((skill, i) => (
-            <Reveal key={skill.category} delay={i * 120} className="flex">
+          {skillGroups.map((group, i) => (
+            <Reveal key={group.category} delay={i * 120} className="flex">
               <div className="w-full rounded-2xl border border-white/10 bg-white/[0.04] p-5 backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-accent/40">
-                <h3 className="font-mono text-sm text-accent">
-                  {skill.category}
-                </h3>
-                <ul className="mt-3 space-y-1.5 text-sm text-muted">
-                  {skill.items.map((item) => (
-                    <li key={item}>{item}</li>
+                <div className="flex items-baseline justify-between gap-2">
+                  <h3 className="font-mono text-sm text-accent">
+                    {group.category}
+                  </h3>
+                  <span className="text-xs text-muted">{group.note}</span>
+                </div>
+                <ul className="mt-4 flex flex-wrap gap-4">
+                  {group.items.map(({ name, Icon, color }) => (
+                    <li
+                      key={name}
+                      className="group/skill flex w-16 flex-col items-center gap-1.5"
+                    >
+                      <Icon
+                        size={30}
+                        color={color}
+                        title={name}
+                        className="transition-transform duration-300 group-hover/skill:scale-125"
+                      />
+                      <span className="text-center text-[10px] leading-tight text-muted">
+                        {name}
+                      </span>
+                    </li>
                   ))}
                 </ul>
               </div>

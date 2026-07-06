@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import ProjectCard from "@/components/ProjectCard";
+import ComingSoon from "@/components/ComingSoon";
 import Reveal from "@/components/Reveal";
 import { projects } from "@/lib/projects";
 
@@ -23,16 +24,23 @@ export default function ProjectsPage() {
       <Reveal delay={120}>
         <p className="mt-4 max-w-2xl leading-relaxed text-muted">
           制作物と実験のアーカイブ。
-          【TODO: 実データに差し替え(lib/projects.ts を編集)】
         </p>
       </Reveal>
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {projects.map((project, i) => (
-          <Reveal key={project.slug} delay={(i % 2) * 120} className="flex">
-            <ProjectCard project={project} />
-          </Reveal>
-        ))}
-      </div>
+      {projects.length > 0 ? (
+        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+          {projects.map((project, i) => (
+            <Reveal key={project.slug} delay={(i % 2) * 120} className="flex">
+              <ProjectCard project={project} />
+            </Reveal>
+          ))}
+        </div>
+      ) : (
+        <Reveal delay={200}>
+          <div className="mt-12">
+            <ComingSoon />
+          </div>
+        </Reveal>
+      )}
     </main>
   );
 }
