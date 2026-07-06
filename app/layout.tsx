@@ -1,51 +1,78 @@
-//meta情報の定義
 import type { Metadata } from "next";
-//フォントの読み込み
-import { Geist, Geist_Mono } from "next/font/google";
-//共通cssの読み込み
+import { Geist, Geist_Mono, Noto_Sans_JP } from "next/font/google";
 import "./globals.css";
-//通常テキスト用フォント
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import CursorDot from "@/components/CursorDot";
+import ScrollProgress from "@/components/ScrollProgress";
+
 const geistSans = Geist({
-  //css変数として利用できるように変換
   variable: "--font-geist-sans",
-  //英数字用フォントデータのみ取得して軽量化
   subsets: ["latin"],
 });
 
-//等幅フォント
 const geistMono = Geist_Mono({
-  //css変数
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  
 });
 
-//サイト全体のmeta情報
+const notoSansJP = Noto_Sans_JP({
+  variable: "--font-noto-sans-jp",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+});
+
+const siteUrl = "https://t4kamuna.com";
+
 export const metadata: Metadata = {
-  //タブの表示名
-  title: "t4kamuna",
-  //検索エンジンで表示される説明文
-  description: "Welcome to t4kamuna's portfolio.",
-  //ファビコン
-    icons: {
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "t4kamuna",
+    template: "%s | t4kamuna",
+  },
+  description:
+    "t4kamuna のポートフォリオ。制作物・技術記事・経歴のアーカイブ。",
+  icons: {
     icon: "/favicon_circle_red.svg",
   },
-  }
+  openGraph: {
+    type: "website",
+    url: siteUrl,
+    siteName: "t4kamuna",
+    title: "t4kamuna",
+    description:
+      "t4kamuna のポートフォリオ。制作物・技術記事・経歴のアーカイブ。",
+    images: [{ url: "/ogp.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    creator: "@t4kamuna",
+    images: ["/ogp.png"],
+  },
+};
 
-// 全ページ共有レイアウト
 export default function RootLayout({
   children,
 }: Readonly<{
-  //各ページの中身がここに入る
   children: React.ReactNode;
 }>) {
   return (
-    //サイト全体の言語設定
-    <html lang="en">
+    // インラインスクリプトが html に .js を足すため、その属性差分の警告のみ抑制する
+    <html lang="ja" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} antialiased`}
       >
+        {/* リビール対象を隠すのは JS が確実に動く場合のみ(パース時に同期実行され、初回描画前に付与される) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("js")`,
+          }}
+        />
+        <ScrollProgress />
+        <CursorDot />
+        <SiteHeader />
         {children}
+        <SiteFooter />
       </body>
     </html>
   );

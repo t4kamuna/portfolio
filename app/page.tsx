@@ -1,170 +1,156 @@
-"use client";
-//ReactのライフサイクルとCanvas参照に使用
-import { useEffect, useRef, useState } from "react";
-//nextjsのページ遷移用リンク
 import Link from "next/link";
-//snsアイコン
-import { Github, Twitter, BookOpen } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
+import ParticleField from "@/components/ParticleField";
+import ProjectCard from "@/components/ProjectCard";
+import Reveal from "@/components/Reveal";
+import Marquee from "@/components/Marquee";
+import { projects } from "@/lib/projects";
 
+const ROLE = "SOFTWARE ENGINEER";
 
 export default function Home() {
-  //canvas要素を参照するためのRef
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  //カーソル
-  const [cursor, setCursor] = useState({x:0, y:0});
-  const [trail, setTrail] = useState<{ x: number; y: number; id: number }[]>([]);
-
-
-
-  useEffect(() => {
-    //canvas
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    // 2D描画コンテキスト
-    const context = canvas.getContext("2d");
-    if (!context) return;
-    //アニメーション管理
-    let animationId: number;
-    //マウス位置
-    const mouse = { x: 0, y: 0 };
-    //ドット情報
-    let dots: { x: number; y: number; baseX: number; baseY: number }[] = [];
-    //描画する文字とサイズ
-    const text = "t4kamuna";
-    const fontSize = 140;
-    //画面サイズ取得→文字描画→文字をどっと変換
-    const setupCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-      context.font = `bold ${fontSize}px sans-serif`;
-      context.fillStyle = "white";
-      context.textAlign = "center";
-      context.textBaseline = "middle";
-      //ドットサイズ
-      context.fillText(text, canvas.width / 2, canvas.height / 2);
-
-      const imageData = context.getImageData(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-      );
-
-      dots = [];
-
-      for (let y = 0; y < canvas.height; y += 6) {
-        for (let x = 0; x < canvas.width; x += 6) {
-          const index = (y * canvas.width + x) * 4;
-          if (imageData.data[index + 3] > 128) {
-            dots.push({ x, y, baseX: x, baseY: y });
-          }
-        }
-      }
-
-      context.clearRect(0, 0, canvas.width, canvas.height);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-  mouse.x = e.clientX;
-  mouse.y = e.clientY;
-
-  setCursor({ x: e.clientX, y: e.clientY });
-
-  const id = Date.now();
-
-  setTrail((prev) => [
-    ...prev.slice(-20),
-    { x: e.clientX, y: e.clientY, id },
-  ]);
-
-  setTimeout(() => {
-    setTrail((prev) => prev.filter((point) => point.id !== id));
-  }, 500);
-};
-
-    const animate = () => {
-      context.clearRect(0, 0, canvas.width, canvas.height);
-
-      dots.forEach((dot) => {
-        const dx = mouse.x - dot.x;
-        const dy = mouse.y - dot.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < 80) {
-          dot.x -= dx * 0.05;
-          dot.y -= dy * 0.05;
-        } else {
-          dot.x += (dot.baseX - dot.x) * 0.05;
-          dot.y += (dot.baseY - dot.y) * 0.05;
-        }
-       //ドット文字の色
-        context.fillStyle = "#ff0040";
-        context.fillRect(dot.x, dot.y, 2, 2);
-      });
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    setupCanvas();
-    animate();
-
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("resize", setupCanvas);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("resize", setupCanvas);
-    };
-  }, []);
+  const featured = projects.filter((p) => p.featured);
 
   return (
-    <main className="relative min-h-screen bg-[#000000] text-[#252020] overflow-hidden">
-      {/* Canvas */}
-      <canvas ref={canvasRef} className="absolute inset-0" />
+    <main className="relative overflow-hidden">
+      {/* Hero: 粒子が名前を形成し、スクロールで拡散する */}
+      <section className="relative h-[100svh]">
+        <ParticleField text="t4kamuna" />
+        <div className="pointer-events-none absolute inset-x-0 bottom-24 flex flex-col items-center gap-3 px-4 text-center">
+          {/* 肩書きは1文字ずつタイプされるように登場する */}
+          <p className="font-mono text-sm tracking-[0.3em] text-muted">
+            {ROLE.split("").map((char, i) => (
+              <span
+                key={i}
+                className="inline-block opacity-0"
+                style={{
+                  animation: "fade-in 0.05s linear forwards",
+                  animationDelay: `${600 + i * 50}ms`,
+                }}
+              >
+                {char === " " ? " " : char}
+              </span>
+            ))}
+            <span
+              aria-hidden
+              className="ml-1.5 inline-block h-3.5 w-2 translate-y-0.5 bg-accent"
+              style={{ animation: "blink 1.1s step-end infinite" }}
+            />
+          </p>
+          <p
+            className="fade-up-in max-w-xl text-sm leading-relaxed text-muted"
+            style={{ animationDelay: "1800ms" }}
+          >
+            【TODO: 実データに差し替え】肩書きと一言(例:
+            Webフロントエンドを中心に、動くもの・触れるものを作っています)
+          </p>
+        </div>
+        <ChevronDown
+          size={20}
+          className="fade-up-in absolute bottom-6 left-1/2 -translate-x-1/2 animate-bounce text-muted"
+          style={{ animationDelay: "2200ms" }}
+        />
+      </section>
 
-      {/* Left Navigation */}
-      <div className="absolute left-10 top-1/2 -translate-y-1/2 flex flex-col gap-6 text-gray-400 text-sm">
-        <Link href="/projects" className="hover:text-white transition">
-          Projects
-        </Link>
-        <Link href="/contact" className="hover:text-white transition">
-          Contact
-        </Link>
-      </div>
+      {/* 流れるテキスト帯 */}
+      <Marquee
+        items={[
+          "Software Engineer",
+          "Web",
+          "TypeScript",
+          "Creative Coding",
+          "Interactive",
+        ]}
+      />
 
-      {/* Top Right Icons */}
-      <div className="absolute top-8 right-10 flex gap-6 text-gray-400">
-        <a
-          href="https://github.com/t4kamuna"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-white transition"
-        >
-          <Github size={20} />
-        </a>
+      {/* About teaser */}
+      <section className="relative mx-auto max-w-5xl px-4 py-28 sm:px-6">
+        <div className="glow-blob -left-32 top-0 h-72 w-72 bg-accent-2" />
+        <Reveal>
+          <p className="font-mono text-xs tracking-[0.3em] text-accent">
+            01 — ABOUT
+          </p>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+            About <span className="gradient-text">me</span>
+          </h2>
+        </Reveal>
+        <Reveal delay={120}>
+          <p className="mt-6 max-w-2xl leading-relaxed text-muted">
+            【TODO: 実データに差し替え】自己紹介を3〜4行で。何をしてきた人で、いま何に興味があり、どんな仕事がしたいか。
+          </p>
+        </Reveal>
+        <Reveal delay={200}>
+          <Link
+            href="/about"
+            className="group mt-6 inline-flex items-center gap-1.5 text-sm text-accent"
+          >
+            経歴・スキルを見る
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-x-1.5"
+            />
+          </Link>
+        </Reveal>
+      </section>
 
-        <a
-          href="https://zenn.dev/t4kamuna"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-white transition"
-        >
-          <BookOpen size={20} />
-        </a>
+      {/* Featured projects */}
+      <section className="relative mx-auto max-w-5xl px-4 py-28 sm:px-6">
+        <div className="glow-blob -right-32 top-10 h-72 w-72 bg-accent" />
+        <Reveal>
+          <p className="font-mono text-xs tracking-[0.3em] text-accent">
+            02 — WORKS
+          </p>
+          <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+            Featured <span className="gradient-text">projects</span>
+          </h2>
+        </Reveal>
+        <div className="mt-10 grid gap-6 sm:grid-cols-2">
+          {featured.map((project, i) => (
+            <Reveal key={project.slug} delay={i * 120} className="flex">
+              <ProjectCard project={project} />
+            </Reveal>
+          ))}
+        </div>
+        <Reveal delay={200}>
+          <Link
+            href="/projects"
+            className="group mt-10 inline-flex items-center gap-1.5 text-sm text-accent"
+          >
+            すべてのプロジェクトを見る
+            <ArrowRight
+              size={15}
+              className="transition-transform duration-300 group-hover:translate-x-1.5"
+            />
+          </Link>
+        </Reveal>
+      </section>
 
-        <a
-          href="https://twitter.com/t4kamuna"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-white transition"
-        >
-          <Twitter size={20} />
-        </a>
-      </div>
+      {/* Contact CTA */}
+      <section className="mx-auto max-w-5xl px-4 py-28 sm:px-6">
+        <Reveal>
+          <div className="dot-grid relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-accent/10 to-accent-2/10 p-10 text-center backdrop-blur-md sm:p-16">
+            <p className="font-mono text-xs tracking-[0.3em] text-accent">
+              03 — CONTACT
+            </p>
+            <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
+              Let&apos;s <span className="gradient-text">connect</span>
+            </h2>
+            <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-muted">
+              お仕事のご相談・技術の話など、お気軽にご連絡ください。
+            </p>
+            <Link
+              href="/contact"
+              className="group mt-8 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-bold text-white transition duration-300 hover:scale-105 hover:shadow-[0_0_36px_rgba(255,0,64,0.5)]"
+            >
+              Contact
+              <ArrowRight
+                size={15}
+                className="transition-transform duration-300 group-hover:translate-x-1"
+              />
+            </Link>
+          </div>
+        </Reveal>
+      </section>
     </main>
   );
 }

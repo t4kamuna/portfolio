@@ -1,39 +1,196 @@
 @import "tailwindcss";
-/*  サイト全体の色変数*/
+
+/* サイト全体の色変数(案D: Particle Field) */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0b0e14;
+  --foreground: #e2e8f0;
+  --accent: #ff0040;
+  --accent-2: #7c3aed;
+  --muted: #8b95a7;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-muted: var(--muted);
+  --font-sans: var(--font-geist-sans), var(--font-noto-sans-jp), sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
 }
 
-/* OSがダークモードの場合に色を切り替える*/
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #ffffff;
-    --foreground: #000000;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
-/* トップページを1枚余白なし構成 */
-html,
-body {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  overscroll-behavior: none;
-}
-
-/* サイト全体の基本スタイル*/
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
+::selection {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* 赤→紫のグラデーションテキスト(見出しのアクセントに限定使用)
+   background-position をゆっくり往復させて「生きている」質感にする */
+.gradient-text {
+  background: linear-gradient(
+    90deg,
+    var(--accent),
+    var(--accent-2),
+    var(--accent)
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
+/* セクション背景ににじませる発光ブロブ */
+.glow-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(120px);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* 微細なドットグリッド(粒子モチーフをテクスチャとして反復) */
+.dot-grid {
+  background-image: radial-gradient(
+    rgba(226, 232, 240, 0.07) 1px,
+    transparent 1px
+  );
+  background-size: 26px 26px;
+}
+
+/* ===== Motion ===== */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes gradient-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ページ遷移時のフェードイン(app/template.tsx で使用) */
+.page-enter {
+  animation: fade-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ロード時の順次登場(inline の animation-delay と組み合わせる) */
+.fade-up-in {
+  opacity: 0;
+  animation: fade-up 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* スクロール連動リビール(components/Reveal.tsx が is-visible を付与)
+   html.js は layout の同期インラインスクリプトが付与する。
+   JS が動かない環境では最初から表示されるため、コンテンツが隠れたままにならない */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+html.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* マーキー帯 */
+.marquee-track {
+  animation: marquee 24s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* ナビリンクの下線がグラデーションで伸びる */
+.nav-link {
+  background-image: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  padding-bottom: 2px;
+  transition:
+    background-size 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.3s;
+}
+.nav-link:hover {
+  background-size: 100% 1px;
+}
+
+/* カスタムカーソル有効時はネイティブカーソルを隠す */
+.cursor-dot-active,
+.cursor-dot-active * {
+  cursor: none !important;
+}
+.cursor-ring-hover {
+  width: 3.5rem !important;
+  height: 3.5rem !important;
+  border-color: color-mix(in srgb, var(--accent) 70%, transparent) !important;
+}
+
+/* モーション抑制環境ではすべて静的に表示する */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .fade-up-in,
+  .marquee-track,
+  .gradient-text {
+    animation: none !important;
+  }
+  .fade-up-in {
+    opacity: 1;
+  }
+  html.js .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
