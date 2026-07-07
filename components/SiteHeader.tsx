@@ -1,4 +1,5 @@
 import Link from "next/link";
+import JstClock from "@/components/JstClock";
 
 const navItems = [
   { href: "/projects", label: "Projects" },
@@ -17,17 +18,23 @@ export default function SiteHeader() {
           <span className="inline-block h-2 w-2 rounded-full bg-accent" />
           t4kamuna
         </Link>
-        <nav className="flex items-center gap-5 text-sm text-muted sm:gap-8">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="nav-link hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
+        <div className="flex items-center gap-5 sm:gap-8">
+          <nav className="flex items-center gap-5 text-sm text-muted sm:gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="nav-link hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+          {/* 幅が狭い画面ではナビを優先して時計は隠す */}
+          <span className="hidden md:block">
+            <JstClock />
+          </span>
+        </div>
       </div>
     </header>
   );
