@@ -5,6 +5,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import CursorDot from "@/components/CursorDot";
 import ScrollProgress from "@/components/ScrollProgress";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,12 +63,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${notoSansJP.variable} antialiased`}
       >
-        {/* リビール対象を隠すのは JS が確実に動く場合のみ(パース時に同期実行され、初回描画前に付与される) */}
+        {/* パース時に同期実行され、初回描画前にクラスを付与する:
+            .js = リビール対象を隠すのは JS が確実に動く場合のみ
+            .show-loader = ローディング画面はセッション初回かつモーション許可時のみ */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add("js")`,
+            __html: `document.documentElement.classList.add("js");try{if(!sessionStorage.getItem("t4-loaded")&&!matchMedia("(prefers-reduced-motion: reduce)").matches){document.documentElement.classList.add("show-loader")}}catch(e){}`,
           }}
         />
+        <LoadingScreen />
         <ScrollProgress />
         <CursorDot />
         <SiteHeader />

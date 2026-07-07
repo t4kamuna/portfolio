@@ -166,6 +166,18 @@ html.js .reveal.is-visible {
   background-size: 100% 1px;
 }
 
+/* ローディング画面: 表示可否は描画前の同期スクリプトが html.show-loader で決める */
+.loader {
+  display: none;
+}
+html.show-loader .loader {
+  display: flex;
+}
+/* ローディング中は背後のスクロールを止める */
+html.show-loader {
+  overflow: hidden;
+}
+
 /* カスタムカーソル有効時はネイティブカーソルを隠す */
 .cursor-dot-active,
 .cursor-dot-active * {
