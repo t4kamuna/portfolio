@@ -15,15 +15,16 @@ export type Project = {
 };
 
 export const projects: Project[] = [
-  // {
-  //   slug: "my-first-project",
-  //   title: "プロジェクト名",
-  //   description:
-  //     "どんな課題を、どんな技術で解決したかを2〜3行で。成果があれば数字も。",
-  //   tags: ["Next.js", "TypeScript"],
-  //   year: "2026",
-  //   githubUrl: "https://github.com/t4kamuna/xxx",
-  //   demoUrl: "https://xxx.vercel.app",
-  //   featured: true,
-  // },
+  {
+    slug: "yokomoji-kaigi",
+    title: "横文字会議",
+    description:
+      "ビジネス横文字カードでコンボを繋ぎ、制限時間内の「合意形成」を目指すスコアアタックゲーム。NPC の発言や議題との文脈の噛み合いを判定する仕組みをインターフェースとして抽象化し、ルールベース判定から LLM 判定へ差し替え可能な設計にした。",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
+    year: "2026",
+    // TODO: リポジトリを公開したら githubUrl、Vercel にデプロイしたら demoUrl を追加
+    githubUrl: undefined,
+    demoUrl: undefined,
+    featured: true,
+  },
 ];
