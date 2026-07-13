@@ -22,9 +22,9 @@ export const projects: Project[] = [
       "ビジネス横文字カードでコンボを繋ぎ、制限時間内の「合意形成」を目指すスコアアタックゲーム。NPC の発言や議題との文脈の噛み合いを判定する仕組みをインターフェースとして抽象化し、ルールベース判定から LLM 判定へ差し替え可能な設計にした。",
     tags: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion"],
     year: "2026",
-    // TODO: リポジトリを公開したら githubUrl、Vercel にデプロイしたら demoUrl を追加
+    // TODO: リポジトリを公開したら githubUrl を追加
     githubUrl: undefined,
-    demoUrl: undefined,
+    demoUrl: "https://yokomoji-kaigi.vercel.app",
     featured: true,
   },
 ];
